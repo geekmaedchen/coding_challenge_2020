@@ -35,8 +35,6 @@ export default class chartTest extends Component {
     series1.tensionX = 0.7
     series1.bullets.push(new am4charts.CircleBullet())
 
-    // Add legend
-    chart.legend = new am4charts.Legend()
     this.chart = chart
   }
 
@@ -54,8 +52,8 @@ export default class chartTest extends Component {
   render() {
     return (
       <>
-        <h2>{this.props.id}</h2>
-        <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
+        <h2>{this.props.name}</h2>
+        <div id="chartdiv" style={{ width: '100%', height: '80%' }}></div>
       </>
     )
   }
