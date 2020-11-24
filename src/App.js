@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Tests from './tests.json'
 import AggMeasur from './aggregated_measurements.json'
-import ChartTest from './chartTest'
+import ChartTest from './ChartTest'
 import PopUp from './PopUp'
 
 export default function App() {
@@ -23,7 +23,7 @@ export default function App() {
             <tr
               id={test.test_id}
               key={test.test_id}
-              onClick={(event) => clickON(test.test_id, test.test_name)}
+              onClick={(event) => clickOn(test.test_id, test.test_name)}
             >
               <td className="bold">{test.test_name}</td>
               <td className={findColor(AggMeasured(test.test_id).min)}>
@@ -59,7 +59,7 @@ export default function App() {
       return 'critical_warning'
     }
   }
-  function clickON(id, name) {
+  function clickOn(id, name) {
     setState({ selected: id, name: name })
   }
 
