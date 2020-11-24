@@ -1,53 +1,62 @@
-// Import stuff
 import React, { Component } from 'react'
 import * as am4core from '@amcharts/amcharts4/core'
 import * as am4charts from '@amcharts/amcharts4/charts'
+import Measurements from './measurements.json'
 
-class chartTest extends Component {
+export default class chartTest extends Component {
+  idFiltered(id) {
+    const filtered = Measurements.filter((chartId) => chartId.test_id === id)
+    return filtered[0]
+  }
+
   componentDidMount() {
     let chart = am4core.create('chartdiv', am4charts.XYChart)
 
-    chart.paddingRight = 20
+    // Set up data source
+    // [{year: "1994", cars: 1587, motorcycles: 650, bicycles: 121}, …]
+    chart.data = this.idFiltered(this.props.id).measurements
 
-    let data = []
-    let visits = 10
-    for (let i = 1; i < 366; i++) {
-      visits += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10)
-      data.push({ date: new Date(2018, 0, i), name: 'name' + i, value: visits })
-    }
+    // Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+    // 3. category = 'time'
+    categoryAxis.dataFields.category = 'time'
 
-    chart.data = data
+    // Create value axis
+    chart.yAxes.push(new am4charts.ValueAxis())
 
-    let dateAxis = chart.xAxes.push(new am4charts.DateAxis())
-    dateAxis.renderer.grid.template.location = 0
+    // Create series
+    var series1 = chart.series.push(new am4charts.LineSeries())
+    // 4. series1.dataFields.valueY = 'value'
+    series1.dataFields.valueY = 'value'
+    // 5. series1.dataFields.categoryX = 'time'
+    series1.dataFields.categoryX = 'time'
+    series1.name = ''
+    series1.strokeWidth = 3
+    series1.tensionX = 0.7
+    series1.bullets.push(new am4charts.CircleBullet())
 
-    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis())
-    valueAxis.tooltip.disabled = true
-    valueAxis.renderer.minWidth = 35
-
-    let series = chart.series.push(new am4charts.LineSeries())
-    series.dataFields.dateX = 'date'
-    series.dataFields.valueY = 'value'
-
-    series.tooltipText = '{valueY.value}'
-    chart.cursor = new am4charts.XYCursor()
-
-    let scrollbarX = new am4charts.XYChartScrollbar()
-    scrollbarX.series.push(series)
-    chart.scrollbarX = scrollbarX
-
+    // Add legend
+    chart.legend = new am4charts.Legend()
     this.chart = chart
+  }
+
+  componentDidUpdate() {
+    this.chart.data = this.idFiltered(this.props.id).measurements
   }
 
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose()
+      this.chart = null
     }
   }
 
   render() {
-    return <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
+    return (
+      <>
+        <h2>{this.props.id}</h2>
+        <div id="chartdiv" style={{ width: '100%', height: '500px' }}></div>
+      </>
+    )
   }
 }
-
-export default chartTest

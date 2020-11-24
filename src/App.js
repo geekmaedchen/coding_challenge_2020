@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Tests from './tests.json'
 import AggMeasur from './aggregated_measurements.json'
 import ChartTest from './chartTest'
 
-export default function App(id) {
+export default function App() {
+  const [state, setState] = useState({ selected: null })
+
   return (
-    <>
+    <div>
       <table>
         <thead>
           <tr>
@@ -17,12 +19,13 @@ export default function App(id) {
         </thead>
         <tbody>
           {Tests.map((test) => (
-            <tr key={test.test_id}>
+            <tr
+              id={test.test_id}
+              key={test.test_id}
+              onClick={(event) => clickON(test.test_id)}
+            >
               <td>{test.test_name}</td>
-              <td
-                onClick={onClick}
-                className={findColor(AggMeasured(test.test_id).min)}
-              >
+              <td className={findColor(AggMeasured(test.test_id).min)}>
                 {AggMeasured(test.test_id).min}
               </td>
               <td className={findColor(AggMeasured(test.test_id).average)}>
@@ -35,8 +38,8 @@ export default function App(id) {
           ))}
         </tbody>
       </table>
-      <ChartTest></ChartTest>
-    </>
+      <div>{promptChart()}</div>
+    </div>
   )
 
   function AggMeasured(id) {
@@ -55,8 +58,13 @@ export default function App(id) {
       return 'critical_warning'
     }
   }
+  function clickON(id) {
+    setState({ selected: id })
+  }
 
-  function onClick() {
-    window.alert(<ChartTest></ChartTest>)
+  function promptChart() {
+    if (state.selected !== null) {
+      return <ChartTest id={state.selected}></ChartTest>
+    }
   }
 }
